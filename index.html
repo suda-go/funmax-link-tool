@@ -21,6 +21,8 @@ button:hover { background: #4338ca; }
 button:active { background: #3730a3; }
 .btn-copy { background: #10b981; }
 .btn-copy:hover { background: #059669; }
+.btn-json { background: #f59e0b; }
+.btn-json:hover { background: #d97706; }
 .msg { margin-top: 8px; font-size: 13px; color: #10b981; min-height: 20px; text-align: center; }
 @media (max-width: 768px) {
   .main { flex-direction: column; }
@@ -40,6 +42,7 @@ button:active { background: #3730a3; }
     <div class="middle">
       <button onclick="convert()">转换 →</button>
       <button class="btn-copy" onclick="copyResult()">复制结果</button>
+      <button class="btn-json" onclick="copyJson()">复制 JSON</button>
       <div class="msg" id="msg"></div>
     </div>
     <div class="panel">
@@ -70,10 +73,24 @@ function copyResult() {
   const output = document.getElementById('output');
   if (!output.value) return;
   navigator.clipboard.writeText(output.value).then(() => {
-    const msg = document.getElementById('msg');
-    msg.textContent = '已复制';
-    setTimeout(() => msg.textContent = '', 2000);
+    showMsg('已复制');
   });
+}
+
+function copyJson() {
+  const output = document.getElementById('output');
+  if (!output.value) return;
+  const lines = output.value.split('\n').filter(l => l && !l.startsWith('[无效链接]'));
+  const json = JSON.stringify(lines, null, 2);
+  navigator.clipboard.writeText(json).then(() => {
+    showMsg('已复制 JSON');
+  });
+}
+
+function showMsg(text) {
+  const msg = document.getElementById('msg');
+  msg.textContent = text;
+  setTimeout(() => msg.textContent = '', 2000);
 }
 </script>
 </body>
