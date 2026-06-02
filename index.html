@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Funmax 链接转换工具</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f5f5f5; padding: 40px 20px; }
+.container { max-width: 700px; margin: 0 auto; background: #fff; border-radius: 12px; padding: 40px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+h1 { font-size: 22px; margin-bottom: 24px; color: #333; }
+label { display: block; font-size: 14px; color: #666; margin-bottom: 8px; }
+textarea { width: 100%; border: 1px solid #ddd; border-radius: 8px; padding: 12px; font-size: 14px; font-family: monospace; resize: vertical; transition: border-color 0.2s; }
+textarea:focus { outline: none; border-color: #4f46e5; }
+#input { height: 80px; }
+#output { height: 100px; background: #f9fafb; }
+button { margin-top: 16px; padding: 10px 24px; background: #4f46e5; color: #fff; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; transition: background 0.2s; }
+button:hover { background: #4338ca; }
+button:active { background: #3730a3; }
+.btn-group { display: flex; gap: 10px; margin-top: 16px; }
+.btn-copy { background: #10b981; }
+.btn-copy:hover { background: #059669; }
+.result { margin-top: 24px; }
+.msg { margin-top: 8px; font-size: 13px; color: #10b981; display: none; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Funmax 链接转换工具</h1>
+  <label for="input">输入游戏链接</label>
+  <textarea id="input" placeholder="https://afantai-browser02.aaxxgames.com/detail/game-detail.html?gid=..."></textarea>
+  <div class="btn-group">
+    <button onclick="convert()">转换</button>
+  </div>
+  <div class="result">
+    <label for="output">输出 Funmax Deep Link</label>
+    <textarea id="output" readonly></textarea>
+    <div class="btn-group">
+      <button class="btn-copy" onclick="copyResult()">复制结果</button>
+    </div>
+    <div class="msg" id="msg">已复制到剪贴板</div>
+  </div>
+</div>
+<script>
+function convert() {
+  const url = document.getElementById('input').value.trim();
+  if (!url) return;
+  const params = new URL(url).searchParams;
+  const gameId = params.get('gid') || '';
+  const encoded = encodeURIComponent(url);
+  document.getElementById('output').value = `funmax://game.detail?miref=mediation&url=${encoded}&gameId=${gameId}`;
+}
+
+function copyResult() {
+  const output = document.getElementById('output');
+  if (!output.value) return;
+  navigator.clipboard.writeText(output.value).then(() => {
+    const msg = document.getElementById('msg');
+    msg.style.display = 'block';
+    setTimeout(() => msg.style.display = 'none', 2000);
+  });
+}
+
+document.getElementById('input').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); convert(); }
+});
+</script>
+</body>
+</html>
